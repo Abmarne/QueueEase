@@ -1,0 +1,67 @@
+👥 Roles
+1. Business (Queue Creator)
+- Registers/logs in via Supabase Auth.
+- Creates and manages queues.
+- Shares queue link/QR with customers.
+- Monitors live queue dashboard.
+- Marks customers as “served” or “removed.”
+- Views basic analytics (served count, average wait time).
+2. Customer (Queue User)
+- Accesses queue via shared link/QR (no login required for MVP).
+- Joins queue → receives digital token.
+- Tracks position in real-time.
+- Gets notified when their turn is near.
+- Can leave queue if unavailable.
+
+🗄 Updated Database Schema (Supabase)
+users
+| Column        | Type        | Notes                          |
+|---------------|-------------|--------------------------------|
+| id            | UUID (PK)   | Supabase Auth user ID          |
+| role          | ENUM        | business / customer        |
+| name          | TEXT        | Business name or customer name |
+| email         | TEXT        | Unique (required for business, optional for customer) |
+queues
+| Column        | Type        | Notes                          |
+|---------------|-------------|--------------------------------|
+| id            | UUID (PK)   | Queue ID                       |
+| business_id   | UUID (FK)   | References users(id)           |
+| name          | TEXT        | Queue name (e.g., “Salon Queue”) |
+| status        | ENUM        | active / closed            |
+| created_at    | TIMESTAMP   |                                |
+tokens
+| Column        | Type        | Notes                          |
+|---------------|-------------|--------------------------------|
+| id            | UUID (PK)   | Token ID                       |
+| queue_id      | UUID (FK)   | References queues(id)          |
+| customer_id   | UUID (FK)   | References users(id) (optional if guest) |
+| position      | INT         | Auto-increment per queue       |
+| status        | ENUM        | waiting / served / left  |
+| created_at    | TIMESTAMP   |                                |
+
+⚙️ Role-Based Access Control (RBAC)
+- Business Role:
+- Can create/manage queues.
+- Can view analytics.
+- Can update token statuses.
+- Customer Role:
+- Can join queues.
+- Can view their own token + queue status.
+- Cannot modify other tokens or analytics.
+
+🎨 UI Design by Role
+Business Dashboard
+- Login/Register → Business account.
+- Create Queue → Name + description.
+- Queue View → List of customers, actions (serve/remove).
+- Analytics Tab → Served count, average wait time.
+Customer Interface
+- Queue Entry Page → Business name + “Join Queue” button.
+- Queue Status Page → Shows token number, position, estimated wait time.
+- Notification → Email/push when position ≤ 3.
+
+✅ MVP Deliverables with Roles
+- Supabase Auth with role assignment (business / customer).
+- Business dashboard (queue creation, management, analytics).
+- Customer interface (join/view queue, notifications).
+- Realtime updates via Supabase Realtime.
