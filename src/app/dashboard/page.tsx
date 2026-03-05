@@ -6,6 +6,7 @@ import { useAuth } from "@/context/auth-context";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Users, CheckCircle2, ListOrdered } from "lucide-react";
+import Link from "next/link";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -58,10 +59,12 @@ export default function DashboardPage() {
           <h2 className="text-3xl font-bold tracking-tight">Overview</h2>
           <p className="text-muted-foreground">Welcome back to your QueueEase dashboard.</p>
         </div>
-        <Button className="gap-2">
-          <Plus size={18} />
-          Create New Queue
-        </Button>
+        <Link href="/dashboard/queues">
+          <Button className="gap-2">
+            <Plus size={18} />
+            Create New Queue
+          </Button>
+        </Link>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -110,9 +113,13 @@ export default function DashboardPage() {
             <CardDescription>Manage your queues efficiently.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-             <Button variant="outline" className="w-full justify-start">Create a new queue</Button>
-             <Button variant="outline" className="w-full justify-start">View live dashboard</Button>
-             <Button variant="outline" className="w-full justify-start">Print QR codes</Button>
+             <Link href="/dashboard/queues" className="block">
+               <Button variant="outline" className="w-full justify-start">Create a new queue</Button>
+             </Link>
+             <Link href="/dashboard/queues" className="block">
+               <Button variant="outline" className="w-full justify-start">View live dashboard</Button>
+             </Link>
+             <Button variant="outline" className="w-full justify-start" disabled>Print QR codes (Coming Soon)</Button>
           </CardContent>
         </Card>
       </div>

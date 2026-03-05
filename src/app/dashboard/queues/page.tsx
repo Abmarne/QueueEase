@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, ListOrdered, Play, Square, ExternalLink } from "lucide-react";
+import { Plus, ListOrdered, Play, Square, ExternalLink, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 type Queue = {
@@ -82,6 +82,25 @@ export default function QueuesPage() {
     }
   }
 
+  async function deleteQueue(id: string) {
+    if (!confirm("Are you sure you want to delete this queue? All tokens and data associated with it will be permanently removed.")) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("queues")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+      setQueues(queues.filter(q => q.id !== id));
+    } catch (error) {
+      console.error("Error deleting queue:", error);
+      alert("Failed to delete queue. Please try again.");
+    }
+  }
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -151,6 +170,15 @@ export default function QueuesPage() {
                     title={queue.status === 'active' ? 'Close Queue' : 'Open Queue'}
                   >
                     {queue.status === 'active' ? <Square size={18} className="fill-current" /> : <Play size={18} className="fill-current" />}
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    onClick={() => deleteQueue(queue.id)}
+                    title="Delete Queue"
+                  >
+                    <Trash2 size={18} />
                   </Button>
                 </div>
               </CardContent>

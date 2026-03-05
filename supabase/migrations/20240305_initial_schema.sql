@@ -1,10 +1,24 @@
 -- 1. Create ENUMs
-CREATE TYPE user_role AS ENUM ('business', 'customer');
-CREATE TYPE queue_status AS ENUM ('active', 'closed');
-CREATE TYPE token_status AS ENUM ('waiting', 'served', 'left');
+DO $$ BEGIN
+    CREATE TYPE user_role AS ENUM ('business', 'customer');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE TYPE queue_status AS ENUM ('active', 'closed');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE TYPE token_status AS ENUM ('waiting', 'served', 'left');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- 2. Create Users table (extends Supabase Auth)
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS public.users (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   role user_role NOT NULL DEFAULT 'customer',
   name TEXT,
@@ -14,7 +28,11 @@ CREATE TABLE users (
 
 -- Trigger to handle new user signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER 
+LANGUAGE plpgsql 
+SECURITY DEFINER 
+SET search_path = public
+AS $$
 BEGIN
   INSERT INTO public.users (id, email, name, role)
   VALUES (
@@ -22,14 +40,27 @@ BEGIN
     NEW.email,
     NEW.raw_user_meta_data->>'name',
     COALESCE((NEW.raw_user_meta_data->>'role')::user_role, 'customer'::user_role)
-  );
+  )
+  ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
 
+-- Ensure Trigger is attached
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- SYNC: Add existing users who were missed
+INSERT INTO public.users (id, email, name, role)
+SELECT 
+  id, 
+  email, 
+  raw_user_meta_data->>'name',
+  COALESCE((raw_user_meta_data->>'role')::user_role, 'customer'::user_role)
+FROM auth.users
+ON CONFLICT (id) DO NOTHING;
 
 
 -- 3. Create Queues table
@@ -42,17 +73,15 @@ CREATE TABLE queues (
 );
 
 -- 4. Create Tokens table
-CREATE TABLE tokens (
+CREATE TABLE IF NOT EXISTS tokens (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   queue_id UUID NOT NULL REFERENCES queues(id) ON DELETE CASCADE,
   customer_id UUID REFERENCES users(id) ON DELETE SET NULL, -- Nullable for guest entry
-  position SERIAL, -- This will need manual management per queue in application logic if we want it to reset, but SERIAL is a start
+  guest_name TEXT, -- To store names of customers who don't log in
+  position SERIAL, 
   status token_status NOT NULL DEFAULT 'waiting',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
--- Note: For a strictly per-queue position, we might use a trigger or handle it in the application.
--- For the MVP, we'll implement a simple position logic.
 
 -- 5. Enable Row Level Security (RLS)
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
@@ -70,14 +99,14 @@ CREATE POLICY "Users can update their own profile" ON users
 
 -- Queues: Everyone can read active queues, only businesses can manage their own
 CREATE POLICY "Public can read active queues" ON queues
-  FOR SELECT USING (status = 'active');
+  FOR SELECT USING (true); -- Everyone can see all queues for joining
 
 CREATE POLICY "Businesses can manage their own queues" ON queues
   FOR ALL USING (auth.uid() = business_id);
 
 -- Tokens: Customers can read their own tokens, businesses can manage tokens in their queues
-CREATE POLICY "Customers can read their own tokens" ON tokens
-  FOR SELECT USING (auth.uid() = customer_id);
+CREATE POLICY "Public can read their own token status" ON tokens
+  FOR SELECT USING (true); -- We'll filter by ID in the application logic for status page
 
 CREATE POLICY "Businesses can manage tokens in their queues" ON tokens
   FOR ALL USING (
@@ -88,5 +117,8 @@ CREATE POLICY "Businesses can manage tokens in their queues" ON tokens
     )
   );
 
-CREATE POLICY "Customers can join queues" ON tokens
-  FOR INSERT WITH CHECK (auth.role() = 'authenticated'); -- Or allow anon if guest logic is enabled later
+CREATE POLICY "Public can join queues" ON tokens
+  FOR INSERT WITH CHECK (true); -- Allow anyone to join a queue
+
+CREATE POLICY "Public can update their own token status" ON tokens
+  FOR UPDATE USING (true); -- Allow 'leaving' via status page

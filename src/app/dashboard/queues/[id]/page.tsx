@@ -15,6 +15,7 @@ type Token = {
   status: 'waiting' | 'served' | 'left';
   created_at: string;
   customer_id: string | null;
+  guest_name: string | null;
   users?: {
     name: string;
   };
@@ -171,7 +172,7 @@ export default function QueueDashboardPage() {
                   <CardContent className="flex items-center justify-between p-4">
                     <div>
                       <span className="text-2xl font-black text-primary mr-4">#{token.position}</span>
-                      <span className="font-medium">{token.users?.name || "Guest"}</span>
+                      <span className="font-medium">{token.users?.name || token.guest_name || "Guest"}</span>
                     </div>
                     <div className="flex gap-2">
                       <Button size="sm" className="gap-1 bg-green-600 hover:bg-green-700" onClick={() => updateTokenStatus(token.id, 'served')}>
@@ -201,7 +202,7 @@ export default function QueueDashboardPage() {
                 <CardContent className="flex items-center justify-between p-4">
                   <div>
                     <span className="text-lg font-bold mr-4">#{token.position}</span>
-                    <span className="text-muted-foreground">{token.users?.name || "Guest"}</span>
+                    <span className="text-muted-foreground">{token.users?.name || token.guest_name || "Guest"}</span>
                   </div>
                   <span className="text-xs text-muted-foreground">Served</span>
                 </CardContent>

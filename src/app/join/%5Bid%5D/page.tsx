@@ -79,6 +79,7 @@ export default function JoinQueuePage() {
           { 
             queue_id: id, 
             customer_id: customerId || null, 
+            guest_name: customerId ? null : name, 
             position: nextPosition, 
             status: "waiting" 
           }
