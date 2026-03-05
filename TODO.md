@@ -4,29 +4,29 @@ This todo list outlines the necessary steps to achieve the first release (MVP) o
 
 ## 🛠 1. Project Initialization
 
-- [ ] Initialize Next.js project with TypeScript and Tailwind CSS.
+- [x] Initialize Next.js project with TypeScript and Tailwind CSS.
 - [ ] Set up Supabase project (Database + Auth).
-- [ ] Install necessary dependencies (`@supabase/supabase-js`, `lucide-react`, etc.).
-- [ ] Configure environment variables (`.env.local`) for Supabase connectivity.
+- [x] Install necessary dependencies (`@supabase/supabase-js`, `lucide-react`, etc.).
+- [x] Configure environment variables (`.env.local`) for Supabase connectivity.
 
 ## 🗄 2. Database & Security (Supabase)
 
-- [ ] Create `users` table with roles (`business`, `customer`).
-- [ ] Create `queues` table (id, business_id, name, status, created_at).
-- [ ] Create `tokens` table (id, queue_id, customer_id, position, status, created_at).
-- [ ] Set up Database ENUMs:
-  - [ ] `user_role`: business, customer
-  - [ ] `queue_status`: active, closed
-  - [ ] `token_status`: waiting, served, left
-- [ ] Configure Row Level Security (RLS) policies:
-  - [ ] Businesses can manage their own queues and tokens.
-  - [ ] Customers can join queues and view their own token/queue status.
+- [x] Create `users` table with roles (`business`, `customer`).
+- [x] Create `queues` table (id, business_id, name, status, created_at).
+- [x] Create `tokens` table (id, queue_id, customer_id, position, status, created_at).
+- [x] Set up Database ENUMs:
+  - [x] `user_role`: business, customer
+  - [x] `queue_status`: active, closed
+  - [x] `token_status`: waiting, served, left
+- [x] Configure Row Level Security (RLS) policies:
+  - [x] Businesses can manage their own queues and tokens.
+  - [x] Customers can join queues and view their own token/queue status.
 
 ## 🔐 3. Authentication & RBAC
 
-- [ ] Implement Registration/Login flow for Businesses.
+- [x] Implement Registration/Login flow for Businesses.
 - [ ] Implement Guest entry logic for Customers (optional login for MVP).
-- [ ] Handle role assignment upon user signup.
+- [x] Handle role assignment upon user signup.
 
 ## 🏢 4. Business Dashboard
 
