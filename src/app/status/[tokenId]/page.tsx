@@ -19,12 +19,12 @@ export default function TokenStatusPage() {
     if (tokenId) {
       fetchTokenData();
 
-      // Realtime subscription for this token and others in the same queue
+      // Realtime subscription for ALL changes to tokens in this queue
       const channel = supabase
-        .channel(`token-status-${tokenId}`)
+        .channel(`queue-updates-${tokenId}`)
         .on(
           'postgres_changes',
-          { event: '*', schema: 'public', table: 'tokens' }, // Filter would be better but let's refresh on any change for now
+          { event: '*', schema: 'public', table: 'tokens' },
           () => {
             fetchTokenData();
           }

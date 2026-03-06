@@ -80,7 +80,7 @@ export default function DashboardLayout({
 
         <div className="p-4 border-t space-y-4">
           <div className="px-2">
-            <p className="text-sm font-bold truncate">{profile?.name || user.email?.split('@')[0]}</p>
+            <p className="text-sm font-bold truncate">{profile?.name || "Business Account"}</p>
             <p className="text-xs text-muted-foreground truncate">{user.email}</p>
           </div>
           <Button 

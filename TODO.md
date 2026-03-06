@@ -46,10 +46,9 @@ This todo list outlines the necessary steps to achieve the first release (MVP) o
 
 ## 🚀 7. Final Polish & Deployment
 
-- [x] Fix guest name storage and RLS for public access.
-- [x] Ensure Mobile-First Responsive Design for all pages (Dashboard Sidebar fixed).
+- [x] Fix guest name storage and RLS for public access (Verified customer names show correctly).
+- [x] Ensure Mobile-First Responsive Design and real-time position updates (No refresh needed).
 - [ ] Perform End-to-End testing.
-- [ ] Deploy the application to Vercel.
 
 ---
 
@@ -60,5 +59,4 @@ This todo list outlines the necessary steps to achieve the first release (MVP) o
 - [ ] **Advanced Analytics**: Peak hour calculation, staff performance, and demand forecasting.
 - [ ] **Multi-staff Management**: Allow multiple staff members to serve customers from the same queue.
 - [ ] **Loyalty Program**: Simple point-based rewards for returning customers.
-- [ ] **Multilingual Support**: Support for local languages for the customer interface.
 - [ ] **PWA Support**: Allow businesses to install the dashboard as an app.

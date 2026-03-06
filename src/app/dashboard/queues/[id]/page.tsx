@@ -78,17 +78,19 @@ export default function QueueDashboardPage() {
 
   async function fetchTokens() {
     try {
+      // Fetch token with associated user data if it exists
       const { data, error } = await supabase
         .from("tokens")
         .select(`
           *,
-          users(name)
+          users:customer_id(name)
         `)
         .eq("queue_id", id)
         .in("status", ["waiting", "served"])
         .order("position", { ascending: true });
 
       if (error) throw error;
+      console.log("Tokens fetched for dashboard:", data?.[0]); 
       setTokens(data || []);
     } catch (error) {
       console.error("Error fetching tokens:", error);
@@ -103,7 +105,9 @@ export default function QueueDashboardPage() {
         .eq("id", tokenId);
 
       if (error) throw error;
-      // Real-time subscription will handle state update
+      
+      // Optimistic update for better UX
+      setTokens(prev => prev.map(t => t.id === tokenId ? { ...t, status } : t));
     } catch (error) {
       console.error("Error updating token status:", error);
     }
@@ -172,7 +176,15 @@ export default function QueueDashboardPage() {
                   <CardContent className="flex items-center justify-between p-4">
                     <div>
                       <span className="text-2xl font-black text-primary mr-4">#{token.position}</span>
-                      <span className="font-medium">{token.users?.name || token.guest_name || "Guest"}</span>
+                      <span className="font-medium">
+                        {(() => {
+                          // Try to get name from joined user data first, then guest_name
+                          const profileName = Array.isArray(token.users) 
+                            ? token.users[0]?.name 
+                            : (token.users as any)?.name;
+                          return token.guest_name || profileName || "Guest Customer";
+                        })()}
+                      </span>
                     </div>
                     <div className="flex gap-2">
                       <Button size="sm" className="gap-1 bg-green-600 hover:bg-green-700" onClick={() => updateTokenStatus(token.id, 'served')}>
@@ -202,7 +214,14 @@ export default function QueueDashboardPage() {
                 <CardContent className="flex items-center justify-between p-4">
                   <div>
                     <span className="text-lg font-bold mr-4">#{token.position}</span>
-                    <span className="text-muted-foreground">{token.users?.name || token.guest_name || "Guest"}</span>
+                    <span className="text-muted-foreground">
+                      {(() => {
+                        const profileName = Array.isArray(token.users) 
+                          ? token.users[0]?.name 
+                          : (token.users as any)?.name;
+                        return token.guest_name || profileName || "Guest Customer";
+                      })()}
+                    </span>
                   </div>
                   <span className="text-xs text-muted-foreground">Served</span>
                 </CardContent>
