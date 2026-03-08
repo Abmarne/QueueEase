@@ -46,17 +46,45 @@ export default function AnalyticsPage() {
 
       if (error) throw error;
 
-      const served = tokens.filter(t => t.status === 'served');
+      const served = tokens.filter(t => t.status === 'served' && t.served_at);
       const total = tokens.length;
 
-      // Calculate Avg Wait Time (Mock logic: using created_at difference if we had served_at)
-      // Since we don't have served_at in schema yet, let's assume 10 mins average for now 
-      // OR update schema to include served_at. Let's stick to simple stats for MVP.
+      // Calculate Avg Wait Time in minutes
+      let totalWaitMs = 0;
+      served.forEach(t => {
+        const arrival = new Date(t.created_at).getTime();
+        const service = new Date(t.served_at).getTime();
+        totalWaitMs += (service - arrival);
+      });
+
+      const avgWait = served.length > 0 
+        ? Math.round(totalWaitMs / served.length / (1000 * 60)) 
+        : 0;
+
+      // Calculate Peak Hour
+      const hoursCount: Record<number, number> = {};
+      tokens.forEach(t => {
+        const hour = new Date(t.created_at).getHours();
+        hoursCount[hour] = (hoursCount[hour] || 0) + 1;
+      });
+
+      let busiestHour = -1;
+      let maxCount = 0;
+      Object.entries(hoursCount).forEach(([hour, count]) => {
+        if (count > maxCount) {
+          maxCount = count;
+          busiestHour = parseInt(hour);
+        }
+      });
+
+      const peakHourStr = busiestHour !== -1 
+        ? `${busiestHour}:00 - ${busiestHour + 1}:00`
+        : "N/A";
       
       setStats({
         totalServed: served.length,
-        avgWaitTime: 8, // Placeholder: 8 minutes
-        peakHour: "14:00 - 15:00",
+        avgWaitTime: avgWait,
+        peakHour: peakHourStr,
         completionRate: total > 0 ? Math.round((served.length / total) * 100) : 0,
       });
     } catch (error) {

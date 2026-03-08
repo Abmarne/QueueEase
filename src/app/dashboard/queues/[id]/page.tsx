@@ -108,7 +108,10 @@ export default function QueueDashboardPage() {
       
       const { error } = await supabase
         .from("tokens")
-        .update({ status })
+        .update({ 
+          status,
+          served_at: status === 'served' ? new Date().toISOString() : null
+        })
         .eq("id", tokenId);
 
       if (error) throw error;

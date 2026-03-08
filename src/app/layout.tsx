@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "QueueEase | Real-time Queue Management",
   description: "Smart and simple queue management for businesses and customers.",
+  manifest: "/manifest.json",
 };
 
 import { AuthProvider } from "@/context/auth-context";
@@ -32,6 +33,21 @@ export default function RootLayout({
         <AuthProvider>
           {children}
         </AuthProvider>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('Worker registration successful', registration.scope);
+                  }, function(err) {
+                    console.log('Worker registration failed: ', err);
+                  });
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );
