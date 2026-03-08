@@ -27,6 +27,7 @@ export default function JoinQueuePage() {
   const [scheduledAt, setScheduledAt] = useState("");
   const [loading, setLoading] = useState(true);
   const [joining, setJoining] = useState(false);
+  const [waitingCount, setWaitingCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -47,6 +48,16 @@ export default function JoinQueuePage() {
 
       if (error) throw error;
       setQueue(data);
+
+      const { count, error: countError } = await supabase
+        .from("tokens")
+        .select("*", { count: 'exact', head: true })
+        .eq("queue_id", id)
+        .eq("status", "waiting");
+        
+      if (!countError) {
+        setWaitingCount(count || 0);
+      }
     } catch (error) {
       console.error("Error fetching queue:", error);
     } finally {
@@ -120,11 +131,7 @@ export default function JoinQueuePage() {
         .single();
 
       if (error) throw error;
-      alert(`Appointment scheduled for ${new Date(scheduledAt).toLocaleString()}`);
-      setName("");
-      setEmail("");
-      setScheduledAt("");
-      setMode('join');
+      router.push(`/appointment/${data.id}`);
     } catch (error) {
       console.error("Error scheduling appointment:", error);
       alert("Failed to schedule appointment.");
@@ -145,6 +152,16 @@ export default function JoinQueuePage() {
           <CardDescription className="text-base font-medium">
             by {queue.users?.name || "Business"}
           </CardDescription>
+
+          {waitingCount !== null && (
+            <div className="mt-4 mx-auto inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-bold border border-primary/20">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+              </span>
+              {waitingCount} {waitingCount === 1 ? 'person' : 'people'} currently waiting
+            </div>
+          )}
         </CardHeader>
         
         <div className="px-6 flex gap-2 mb-4">

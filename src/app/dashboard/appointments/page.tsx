@@ -108,6 +108,78 @@ export default function AppointmentsPage() {
     }
   }
 
+  const renderAppointmentCard = (appointment: Appointment) => (
+    <Card key={appointment.id} className={`overflow-hidden transition-all hover:shadow-md border-l-4 ${
+      appointment.status === 'scheduled' ? 'border-primary' : 
+      appointment.status === 'checked_in' ? 'border-green-500' : 'border-gray-300'
+    }`}>
+      <CardContent className="p-0">
+        <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="bg-primary/5 rounded-xl p-4 flex flex-col items-center justify-center min-w-[100px] border border-primary/10">
+              <Calendar className="h-5 w-5 text-primary mb-1" />
+              <span className="text-sm font-bold text-primary">
+                {new Date(appointment.scheduled_at).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+              </span>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-tight">
+                {new Date(appointment.scheduled_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+              </span>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <h4 className="text-xl font-bold">{appointment.guest_name}</h4>
+                <Badge variant={
+                  appointment.status === 'scheduled' ? 'default' : 
+                  appointment.status === 'checked_in' ? 'secondary' : 'outline'
+                } className="capitalize px-3 py-0.5 rounded-full font-bold text-[10px] tracking-widest">
+                  {appointment.status.replace('_', ' ')}
+                </Badge>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <LayoutList size={14} className="text-primary/70" />
+                  <span className="font-semibold">{appointment.queues.name}</span>
+                </div>
+                {appointment.guest_email && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Clock size={14} className="text-primary/70" />
+                    <span>{appointment.guest_email}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2 pt-4 md:pt-0 border-t md:border-t-0 border-dashed">
+            {appointment.status === 'scheduled' && (
+              <>
+                <Button 
+                  size="sm" 
+                  className="font-bold bg-green-600 hover:bg-green-700 gap-1.5 shadow-sm"
+                  onClick={() => updateStatus(appointment.id, 'checked_in')}
+                >
+                  <CheckCircle2 size={16} />
+                  Check-in
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="font-bold text-destructive hover:bg-destructive/5 gap-1.5 border-destructive/20"
+                  onClick={() => updateStatus(appointment.id, 'cancelled')}
+                >
+                  <XCircle size={16} />
+                  Cancel
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   if (loading) return <div className="p-8 flex items-center justify-center min-h-[400px]">Loading appointments...</div>;
 
   return (
@@ -123,9 +195,9 @@ export default function AppointmentsPage() {
         </Button>
       </div>
 
-      <div className="grid gap-6">
+      <div className="grid gap-8">
         {appointments.length === 0 ? (
-          <Card className="border-dashed border-2 py-16 flex flex-col items-center justify-center text-center">
+          <Card className="border-dashed border-2 py-16 flex flex-col items-center justify-center text-center shadow-none">
             <Calendar className="h-12 w-12 text-muted-foreground mb-4 opacity-50" />
             <CardTitle className="text-xl">No appointments found</CardTitle>
             <CardDescription className="max-w-xs mt-2 text-base">
@@ -133,77 +205,37 @@ export default function AppointmentsPage() {
             </CardDescription>
           </Card>
         ) : (
-          appointments.map((appointment) => (
-            <Card key={appointment.id} className={`overflow-hidden transition-all hover:shadow-md border-l-4 ${
-              appointment.status === 'scheduled' ? 'border-primary' : 
-              appointment.status === 'checked_in' ? 'border-green-500' : 'border-gray-300'
-            }`}>
-              <CardContent className="p-0">
-                <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <div className="flex flex-col md:flex-row gap-6">
-                    <div className="bg-primary/5 rounded-xl p-4 flex flex-col items-center justify-center min-w-[100px] border border-primary/10">
-                      <Calendar className="h-5 w-5 text-primary mb-1" />
-                      <span className="text-sm font-bold text-primary">
-                        {new Date(appointment.scheduled_at).toLocaleDateString([], { month: 'short', day: 'numeric' })}
-                      </span>
-                      <span className="text-xs font-medium text-muted-foreground uppercase tracking-tight">
-                        {new Date(appointment.scheduled_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                    </div>
+          <div className="space-y-10">
+            {/* Today's Appointments */}
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold border-b pb-2 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-blue-500"></span> 
+                Today's Appointments
+              </h3>
+              <div className="grid gap-4">
+                {appointments.filter(a => new Date(a.scheduled_at).toDateString() === new Date().toDateString()).length === 0 ? (
+                  <p className="text-muted-foreground text-sm italic">No appointments for today.</p>
+                ) : (
+                  appointments.filter(a => new Date(a.scheduled_at).toDateString() === new Date().toDateString()).map(renderAppointmentCard)
+                )}
+              </div>
+            </div>
 
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-xl font-bold">{appointment.guest_name}</h4>
-                        <Badge variant={
-                          appointment.status === 'scheduled' ? 'default' : 
-                          appointment.status === 'checked_in' ? 'secondary' : 'outline'
-                        } className="capitalize px-3 py-0.5 rounded-full font-bold text-[10px] tracking-widest">
-                          {appointment.status.replace('_', ' ')}
-                        </Badge>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <LayoutList size={14} className="text-primary/70" />
-                          <span className="font-semibold">{appointment.queues.name}</span>
-                        </div>
-                        {appointment.guest_email && (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Clock size={14} className="text-primary/70" />
-                            <span>{appointment.guest_email}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2 pt-4 md:pt-0 border-t md:border-t-0 border-dashed">
-                    {appointment.status === 'scheduled' && (
-                      <>
-                        <Button 
-                          size="sm" 
-                          className="font-bold bg-green-600 hover:bg-green-700 gap-1.5 shadow-sm"
-                          onClick={() => updateStatus(appointment.id, 'checked_in')}
-                        >
-                          <CheckCircle2 size={16} />
-                          Check-in
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="font-bold text-destructive hover:bg-destructive/5 gap-1.5 border-destructive/20"
-                          onClick={() => updateStatus(appointment.id, 'cancelled')}
-                        >
-                          <XCircle size={16} />
-                          Cancel
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
+            {/* Upcoming Appointments */}
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold border-b pb-2 flex items-center gap-2 text-muted-foreground">
+                <Calendar size={18} /> 
+                Upcoming Appointments
+              </h3>
+              <div className="grid gap-4">
+                {appointments.filter(a => new Date(a.scheduled_at).toDateString() !== new Date().toDateString()).length === 0 ? (
+                  <p className="text-muted-foreground text-sm italic">No upcoming appointments.</p>
+                ) : (
+                  appointments.filter(a => new Date(a.scheduled_at).toDateString() !== new Date().toDateString()).map(renderAppointmentCard)
+                )}
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

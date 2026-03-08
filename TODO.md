@@ -62,3 +62,13 @@ This todo list outlines the necessary steps to achieve the first release (MVP) o
 - [x] **Loyalty Program**: Simple point-based rewards for returning customers.
 - [x] **PWA Support**: Allow businesses to install the dashboard as an app.
 - [x] **Push Notifications**: Browser-based alerts for customers.
+
+---
+
+## 🦄 Phase 3: The "Wow Factor" Enhancements
+
+- [ ] **Queue Arcade & Trivia**: Built-in real-time browser mini-games or trivia where customers waiting can play against each other. The business owner can configure the winning reward (e.g., skip a spot, 10% discount, free coffee) based on what works best for their specific queue logic.
+- [ ] **Dynamic Pre-boarding (Intake Forms/Menus)**: While waiting in the digital queue, serve the customer the business's digital menu or preliminary paperwork (like a clinic intake form). When it's their turn, their order/paperwork is automatically attached to their token, saving massive amounts of physical time.
+- [ ] **AI Voice Check-in**: Integration with an AI phone agent—walk-in customers can call a phone number and simply talk to the AI to be added to the queue automatically, saving staff from answering the phone.
+- [ ] **Smart "Snooze" (Traffic Delay)**: If a customer is stuck in transit or needs a little more time, they can hit a "Snooze" button. This bumps them back exactly 2-3 spots in line without losing their place completely or holding up the queue.
+- [ ] **AR Wayfinding**: For large venues like hospitals or massive offices, launch an AR camera view when it's their turn that draws a directional line on their phone screen guiding them directly to their assigned counter.
