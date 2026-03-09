@@ -18,6 +18,7 @@ type Token = {
   customer_id: string | null;
   guest_name: string | null;
   customer_email: string | null;
+  party_size: number;
   users?: {
     name: string;
   };
@@ -27,6 +28,7 @@ type Queue = {
   id: string;
   name: string;
   status: 'active' | 'closed';
+  require_party_size: boolean;
 };
 
 export default function QueueDashboardPage() {
@@ -36,6 +38,7 @@ export default function QueueDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
   const [manualName, setManualName] = useState("");
+  const [manualPartySize, setManualPartySize] = useState("1");
   const [addingManual, setAddingManual] = useState(false);
 
   useEffect(() => {
@@ -178,6 +181,7 @@ export default function QueueDashboardPage() {
         .insert([{
           queue_id: id,
           guest_name: manualName,
+          party_size: parseInt(manualPartySize) || 1,
           position: nextPosition,
           status: 'waiting',
           source: 'walk-in'
@@ -188,6 +192,7 @@ export default function QueueDashboardPage() {
       if (error) throw error;
       
       setManualName("");
+      setManualPartySize("1");
       // Real-time subscription will handle the UI update, but we can do it optimistically too
       setTokens(prev => [...prev, data]);
     } catch (error) {
@@ -263,6 +268,17 @@ export default function QueueDashboardPage() {
                   onChange={(e) => setManualName(e.target.value)}
                   disabled={addingManual}
                 />
+                {queue?.require_party_size && (
+                  <input 
+                    type="number" 
+                    placeholder="Party Size" 
+                    className="w-24 bg-transparent border rounded px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                    min="1"
+                    value={manualPartySize}
+                    onChange={(e) => setManualPartySize(e.target.value)}
+                    disabled={addingManual}
+                  />
+                )}
                 <Button size="sm" type="submit" disabled={addingManual || !manualName.trim()}>
                   {addingManual ? "Adding..." : "Add Walk-in"}
                 </Button>
@@ -291,6 +307,11 @@ export default function QueueDashboardPage() {
                         <span className="text-[10px] uppercase font-bold text-muted-foreground/70">
                           {token.source === 'walk-in' ? "🚶 Walk-in" : "📱 Digital"}
                         </span>
+                        {queue?.require_party_size && token.party_size > 0 && (
+                          <span className="flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 w-fit px-1.5 py-0.5 rounded-md mt-1">
+                            <Users size={12} /> {token.party_size}
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="flex gap-2">
@@ -329,6 +350,11 @@ export default function QueueDashboardPage() {
                         return token.guest_name || profileName || "Guest Customer";
                       })()}
                     </span>
+                    {queue?.require_party_size && token.party_size > 0 && (
+                      <span className="ml-2 text-xs font-bold text-primary/70">
+                        ({token.party_size} people)
+                      </span>
+                    )}
                   </div>
                   <span className="text-xs text-muted-foreground">Served</span>
                 </CardContent>

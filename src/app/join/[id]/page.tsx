@@ -24,6 +24,7 @@ export default function JoinQueuePage() {
   const [mode, setMode] = useState<'join' | 'schedule'>('join');
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [partySize, setPartySize] = useState("1");
   const [scheduledDate, setScheduledDate] = useState("");
   const [scheduledHour, setScheduledHour] = useState("12");
   const [scheduledMinute, setScheduledMinute] = useState("00");
@@ -99,6 +100,7 @@ export default function JoinQueuePage() {
             customer_id: customerId || null,
             guest_name: name,
             customer_email: email || null,
+            party_size: parseInt(partySize) || 1,
             position: nextPosition,
             status: "waiting",
           },
@@ -133,6 +135,7 @@ export default function JoinQueuePage() {
           customer_id: user?.id || null,
           guest_name: name,
           guest_email: email || null,
+          party_size: parseInt(partySize) || 1,
           scheduled_at: combinedDate.toISOString(),
           status: 'scheduled'
         }])
@@ -203,6 +206,42 @@ export default function JoinQueuePage() {
                 required
               />
             </div>
+            
+            {queue?.require_party_size && (
+              <div className="space-y-2">
+                <Label htmlFor="party_size" className="text-sm font-bold tracking-wide uppercase opacity-70">Party Size</Label>
+                <div className="flex items-center gap-3">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-11 w-11 rounded-xl"
+                    onClick={() => setPartySize(prev => Math.max(1, parseInt(prev) - 1).toString())}
+                  >
+                    -
+                  </Button>
+                  <Input
+                    id="party_size"
+                    className="h-11 rounded-xl text-center font-bold flex-1"
+                    type="number"
+                    min="1"
+                    max="50"
+                    value={partySize}
+                    onChange={(e) => setPartySize(e.target.value)}
+                    required
+                  />
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-11 w-11 rounded-xl"
+                    onClick={() => setPartySize(prev => (parseInt(prev) + 1).toString())}
+                  >
+                    +
+                  </Button>
+                </div>
+              </div>
+            )}
             
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-bold tracking-wide uppercase opacity-70">Email (Optional)</Label>

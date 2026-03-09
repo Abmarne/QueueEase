@@ -62,6 +62,7 @@ This todo list outlines the necessary steps to achieve the first release (MVP) o
 - [x] **Loyalty Program**: Simple point-based rewards for returning customers.
 - [x] **PWA Support**: Allow businesses to install the dashboard as an app.
 - [x] **Push Notifications**: Browser-based alerts for customers.
+- [x] **Dynamic Party Size**: Allow restaurants and cafes to toggle a "Party Size" requirement so they know exactly how many people are in each group for better table management.
 
 ---
 
@@ -74,4 +75,3 @@ This todo list outlines the necessary steps to achieve the first release (MVP) o
 - [ ] **AR Wayfinding**: For large venues like hospitals or massive offices, launch an AR camera view when it's their turn that draws a directional line on their phone screen guiding them directly to their assigned counter.
 - [ ] **Charity "Fast Pass" (Bid for Good)**: Allow customers to skip the line by making a micro-donation to a registered local charity. This completely solves the "pay-to-skip" fairness controversy by redirecting the financial benefit to public goodwill.It will be config by bussiness if they want.
 - [ ] **Flash "Queue Drops"**: Allow businesses (like bakeries with expiring inventory or barbers with sudden cancellations) to press a single button that instantly pings nearby customers with an exclusive, immediate entry pass for highly discounted services or goods.
-- [ ] **Multi-Party Group Merge**: Friends arriving separately can "bump" phones or share a hyper-link to digitally "tether" their tokens together. The queue intelligently holds the front arrival until the rest of the party arrives, then serves them as a single block.

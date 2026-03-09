@@ -15,6 +15,7 @@ type Queue = {
   created_at: string;
   arcade_enabled: boolean;
   arcade_reward: string | null;
+  require_party_size: boolean;
 };
 
 export default function QueuesPage() {
@@ -25,6 +26,7 @@ export default function QueuesPage() {
   const [newQueueName, setNewQueueName] = useState("");
   const [arcadeEnabled, setArcadeEnabled] = useState(false);
   const [arcadeReward, setArcadeReward] = useState("");
+  const [requirePartySize, setRequirePartySize] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -62,7 +64,8 @@ export default function QueuesPage() {
             name: newQueueName, 
             status: "active",
             arcade_enabled: arcadeEnabled,
-            arcade_reward: arcadeEnabled ? arcadeReward : null
+            arcade_reward: arcadeEnabled ? arcadeReward : null,
+            require_party_size: requirePartySize
           }
         ])
         .select()
@@ -73,6 +76,7 @@ export default function QueuesPage() {
       setNewQueueName("");
       setArcadeEnabled(false);
       setArcadeReward("");
+      setRequirePartySize(false);
       setIsCreating(false);
     } catch (error) {
       console.error("Error creating queue:", error);
@@ -144,6 +148,21 @@ export default function QueuesPage() {
                   autoFocus
                   required
                 />
+              </div>
+
+              <div className="space-y-3 p-4 bg-muted/50 rounded-lg border border-muted">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="party_size_toggle"
+                    className="w-4 h-4 rounded text-primary focus:ring-primary"
+                    checked={requirePartySize}
+                    onChange={(e) => setRequirePartySize(e.target.checked)}
+                  />
+                  <label htmlFor="party_size_toggle" className="text-sm font-bold flex items-center gap-2 cursor-pointer">
+                    Require Party Size (e.g. for Restaurants)
+                  </label>
+                </div>
               </div>
 
               <div className="space-y-3 p-4 bg-primary/5 rounded-lg border border-primary/10">
