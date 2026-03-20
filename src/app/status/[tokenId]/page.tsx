@@ -235,15 +235,16 @@ export default function TokenStatusPage() {
         
         {/* Massive Typographic Hero Section */}
         <div className="text-center w-full relative">
-          <p className="text-muted-foreground/60 uppercase tracking-[0.3em] text-[10px] font-black mb-6">Your Token Number</p>
+          <p className="text-muted-foreground/60 uppercase tracking-[0.3em] text-[10px] font-black mb-4 md:mb-6">Your Token Number</p>
           <div className="relative inline-block">
             {/* The soft glowing text effect */}
-            <h2 className="text-[8rem] xs:text-[10rem] font-black text-white leading-none tracking-tighter drop-shadow-[0_0_60px_rgba(0,112,243,0.3)]">
+            <h2 className="text-7xl sm:text-[10rem] font-black text-white leading-none tracking-tighter drop-shadow-[0_0_60px_rgba(0,112,243,0.3)]">
               #{token.position}
             </h2>
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent mix-blend-overlay pointer-events-none" />
           </div>
         </div>
+
 
         {/* Dynamic State Alert */}
         {position !== null && position <= 3 && position > 0 && (

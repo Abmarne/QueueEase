@@ -58,18 +58,19 @@ export default function DashboardPage() {
       <div className="absolute top-[-20%] right-[-10%] w-[50vw] h-[50vh] rounded-full bg-primary/5 blur-[120px] pointer-events-none -z-10" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vh] rounded-full bg-secondary/5 blur-[120px] pointer-events-none -z-10" />
 
-      <div className="flex items-center justify-between border-b border-white/5 pb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-white/5 pb-6 gap-4">
         <div>
-          <h2 className="text-3xl lg:text-5xl font-black tracking-tight text-white mb-2">Overview</h2>
-          <p className="text-muted-foreground uppercase tracking-widest text-xs font-bold">Welcome back to your Control Center.</p>
+          <h2 className="text-3xl lg:text-5xl font-black tracking-tight text-white mb-1">Overview</h2>
+          <p className="text-muted-foreground uppercase tracking-widest text-[10px] md:text-xs font-bold">Welcome back to your Control Center.</p>
         </div>
-        <Link href="/dashboard/queues">
-          <Button className="gap-2 bg-primary hover:bg-primary/90 text-white font-bold tracking-wide rounded-xl shadow-[0_0_20px_-5px_var(--color-primary)] hover:shadow-[0_0_30px_-5px_var(--color-primary)] transition-all h-12 px-6">
+        <Link href="/dashboard/queues" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90 text-white font-bold tracking-wide rounded-xl shadow-[0_0_20px_-5px_var(--color-primary)] hover:shadow-[0_0_30px_-5px_var(--color-primary)] transition-all h-12 px-6">
             <Plus size={18} />
             Launch Queue
           </Button>
         </Link>
       </div>
+
 
       {/* KPI Bento Grid */}
       <div className="grid gap-6 md:grid-cols-3">
