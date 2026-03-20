@@ -124,50 +124,13 @@ export default function QueueDashboardPage() {
 
       if (error) throw error;
       
-      // If we served someone, check if we need to notify the person who is now #3 in line
-      if (status === 'served' && currentToken) {
-        notifyTurnNear(currentToken.position);
-      }
-
-      // Optimistic update for better UX
+      // Real-time subscription handles UI updates
       setTokens(prev => prev.map(t => t.id === tokenId ? { ...t, status } : t));
     } catch (error) {
       console.error("Error updating token status:", error);
     }
   }
 
-  async function notifyTurnNear(servedPosition: number) {
-    try {
-      // The person who is now 3rd in line is at position: servedPosition + 3
-      // (Because servedPosition is now served, servedPosition + 1 is #1, +2 is #2, +3 is #3)
-      const targetPosition = servedPosition + 3;
-      
-      const { data: tokenToNotify, error } = await supabase
-        .from("tokens")
-        .select("*")
-        .eq("queue_id", id)
-        .eq("position", targetPosition)
-        .eq("status", "waiting")
-        .single();
-      
-      if (error || !tokenToNotify || !tokenToNotify.customer_email) return;
-
-      console.log("Found customer to notify:", tokenToNotify.customer_email);
-
-      await fetch('/api/notify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: tokenToNotify.customer_email,
-          name: tokenToNotify.guest_name || "Customer",
-          queueName: queue?.name || "the queue",
-          position: tokenToNotify.position
-        })
-      });
-    } catch (err) {
-      console.error("Error in notification flow:", err);
-    }
-  }
 
   async function addManualCustomer(e: React.FormEvent) {
     e.preventDefault();
