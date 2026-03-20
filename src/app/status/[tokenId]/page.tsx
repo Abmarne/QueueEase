@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Clock, Users, ArrowLeft, RefreshCw, Zap, Moon } from "lucide-react";
 import ArcadeGame from "@/components/ArcadeGame";
 import PreboardingForm from "@/components/PreboardingForm";
+import Logo from "@/components/Logo";
 
 export default function TokenStatusPage() {
   const { tokenId } = useParams();
@@ -223,7 +224,7 @@ export default function TokenStatusPage() {
         <Button variant="ghost" size="icon" onClick={() => router.push("/")}>
           <ArrowLeft size={20} />
         </Button>
-        <h1 className="font-bold text-lg">{queue?.name}</h1>
+        <Logo size={24} />
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center p-4 gap-6">
@@ -322,8 +323,9 @@ export default function TokenStatusPage() {
         )}
       </main>
 
-      <footer className="p-8 text-center text-xs text-muted-foreground">
-        Powered by QueueEase
+      <footer className="p-8 flex flex-col items-center gap-2">
+        <Logo showText={true} size={20} className="opacity-50 grayscale hover:grayscale-0 transition-all" />
+        <p className="text-[10px] text-muted-foreground">© 2026 QueueEase</p>
       </footer>
     </div>
   );

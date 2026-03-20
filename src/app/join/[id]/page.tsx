@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/auth-context";
+import Logo from "@/components/Logo";
+import Link from "next/link";
 
 export default function JoinQueuePage() {
   const { id } = useParams();
@@ -189,7 +191,10 @@ export default function JoinQueuePage() {
   if (queue.status === "closed") return <div className="flex min-h-screen items-center justify-center">This queue is currently closed.</div>;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 p-4 gap-8">
+      <Link href="/">
+        <Logo size={40} />
+      </Link>
       <Card className="w-full max-w-md shadow-xl border-t-4 border-t-primary">
         <CardHeader className="text-center pb-2">
           <CardTitle className="text-3xl font-black">{queue.name}</CardTitle>

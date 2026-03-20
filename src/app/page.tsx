@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Clock, Users, Zap, LayoutDashboard, Smartphone, ArrowRight } from "lucide-react";
+import Logo from "@/components/Logo";
 
 export default function Home() {
   return (
@@ -8,9 +9,9 @@ export default function Home() {
       {/* Header */}
       <header className="fixed top-0 w-full z-50 border-b bg-background/80 backdrop-blur-md">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-black text-primary">QueueEase</h1>
-          </div>
+          <Link href="/">
+            <Logo />
+          </Link>
           <nav className="hidden md:flex items-center gap-8">
             <Link href="#features" className="text-sm font-medium hover:text-primary">Features</Link>
             <Link href="#how-it-works" className="text-sm font-medium hover:text-primary">How it Works</Link>
@@ -113,8 +114,8 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="py-20 border-t bg-card">
-        <div className="container mx-auto px-4 text-center space-y-4">
-           <h2 className="text-xl font-bold text-primary">QueueEase</h2>
+        <div className="container mx-auto px-4 flex flex-col items-center space-y-4">
+           <Logo showText={true} />
            <p className="text-sm text-muted-foreground">© 2026 QueueEase. All rights reserved.</p>
            <div className="flex items-center justify-center gap-6 text-sm font-medium text-muted-foreground">
              <Link href="#" className="hover:text-primary text-xs">Terms of Service</Link>

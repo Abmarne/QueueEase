@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "QueueEase | Real-time Queue Management",
-  description: "Smart and simple queue management for businesses and customers.",
+  title: "QueueEase | Effortless Real-time Queue Management",
+  description: "Ditch the lines and empower your customers with digital token management. Real-time updates, no app required.",
   manifest: "/manifest.json",
 };
 

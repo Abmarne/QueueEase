@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut, LayoutDashboard, ListOrdered, BarChart3, Menu, X, Calendar, Users, Gift } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import Logo from "@/components/Logo";
 
 export default function DashboardLayout({
   children,
@@ -44,7 +45,7 @@ export default function DashboardLayout({
     <div className="flex min-h-screen bg-muted/30">
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-card border-b flex items-center justify-between px-4 z-40">
-        <h1 className="text-xl font-bold text-primary">QueueEase</h1>
+        <Logo size={28} />
         <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(true)}>
           <Menu size={24} />
         </Button>
@@ -64,7 +65,7 @@ export default function DashboardLayout({
         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
       `}>
         <div className="p-6 flex items-center justify-between">
-          <h1 className="text-2xl font-black text-primary">QueueEase</h1>
+          <Logo />
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSidebarOpen(false)}>
             <X size={20} />
           </Button>
