@@ -13,8 +13,34 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "QueueEase | Effortless Real-time Queue Management",
-  description: "Ditch the lines and empower your customers with digital token management. Real-time updates, no app required.",
+  title: "QueueEase | Real-time Digital Queue Management System",
+  description: "Ditch the lines and empower your customers with digital token management. Real-time updates, no app required. The ultimate digital waitlist software for businesses.",
+  keywords: ["queue management", "digital waitlist", "virtual queue", "restaurant waitlist", "clinic queue system", "queue software"],
+  authors: [{ name: "QueueEase" }],
+  openGraph: {
+    title: "QueueEase | Real-time Digital Queue Management",
+    description: "The ultimate zero-friction waiting line manager. No apps to download. No hardware to buy.",
+    url: "https://queue-ease-umber.vercel.app",
+    siteName: "QueueEase",
+    images: [
+      {
+        url: "/logo.png",
+        width: 800,
+        height: 600,
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "QueueEase | Wait List Software",
+    description: "The ultimate zero-friction waiting line manager.",
+    images: ["/logo.png"],
+  },
+  verification: {
+    google: "23CdBJkd0MUDCmPcSybd-31YjPRzHY9VJxg1WrOm5zM",
+  },
   manifest: "/manifest.json",
   icons: {
     icon: "/logo.png",
